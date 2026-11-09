@@ -1,0 +1,84 @@
+.section { padding-block: 104px 0; }
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.label { font-size: 12px; }
+.title {
+  margin-top: 14px;
+  max-width: 13em;
+  font-weight: 400;
+  font-size: clamp(32px, 4.4vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -.03em;
+}
+.title em { font-size: 1.06em; letter-spacing: -.01em; }
+
+.score { display: flex; align-items: baseline; gap: 12px; }
+.score strong {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 1;
+}
+.score span { font-size: 13px; color: var(--muted); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 28px;
+  border-radius: 22px;
+  background: var(--sand);
+}
+.featured {
+  background: var(--dark);
+  color: #fff;
+}
+
+.stars { display: flex; gap: 3px; color: #c9892f; }
+
+.card blockquote {
+  flex: 1;
+  margin: 22px 0 32px;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -.005em;
+}
+
+.card figcaption { display: flex; align-items: center; gap: 12px; }
+.card figcaption strong { display: block; font-size: 14px; font-weight: 500; }
+.card figcaption small { display: block; font-size: 12px; color: var(--muted); }
+.featured figcaption small { color: rgba(255, 255, 255, .6); }
+
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 17px;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .head { flex-direction: column; align-items: flex-start; }
+  .section { padding-top: 72px; }
+}

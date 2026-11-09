@@ -1,0 +1,70 @@
+.field { position: relative; min-width: 0; }
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 14px 6px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  transition: background .2s;
+}
+.trigger:hover, .active .trigger { background: var(--sand); }
+.trigger:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--sand);
+  color: var(--ink);
+}
+.trigger:hover .icon, .active .icon { background: var(--paper); }
+
+.text { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.25; }
+.label { font-size: 11px; color: var(--muted); }
+.value, .placeholder {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.placeholder { color: #9a9a9a; }
+
+.chev { flex: none; color: var(--muted); transition: transform .2s; }
+.chevOpen { transform: rotate(180deg); }
+
+/* popover membuka ke atas karena bar berada di dasar hero */
+.pop {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 0;
+  z-index: 20;
+  min-width: 100%;
+  padding: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(10, 20, 30, .28);
+  animation: pop .18s ease;
+}
+.right { left: auto; right: 0; }
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+@media (max-width: 480px) {
+  .icon { display: none; }
+  .trigger { padding-left: 16px; }
+  .pop { left: 0; right: 0; }
+}

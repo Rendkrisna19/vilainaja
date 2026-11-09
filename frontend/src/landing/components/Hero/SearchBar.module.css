@@ -1,0 +1,42 @@
+.bar {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 999px;
+}
+
+.submit {
+  height: 52px;
+  padding: 0 36px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background .2s;
+}
+.submit:hover { background: #333; }
+
+@media (max-width: 900px) {
+  .bar {
+    grid-template-columns: 1fr 1fr;
+    border-radius: 28px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+  .submit { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .bar { grid-template-columns: 1fr; }
+}

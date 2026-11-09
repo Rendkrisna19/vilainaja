@@ -1,0 +1,78 @@
+.section { padding-block: 24px 96px; }
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.label { font-size: 12px; }
+
+.title {
+  margin-top: 14px;
+  max-width: 14em;
+  font-weight: 400;
+  font-size: clamp(32px, 4.4vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -.03em;
+}
+.title em { letter-spacing: -.01em; font-size: 1.06em; }
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.live i { width: 8px; height: 8px; border-radius: 50%; background: #1f9d55; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+
+.controls { display: flex; gap: 10px; }
+.controls button {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  background: transparent;
+  transition: background .2s, color .2s;
+}
+.controls button:hover { background: var(--ink); color: #fff; }
+
+/* Tanpa scroll-snap: geser otomatis halus (marquee) tidak boleh "tersangkut" di titik snap. */
+.track {
+  --g: clamp(20px, 5vw, 72px);
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-inline: max(var(--g), calc((100vw - 1240px) / 2 + var(--g)));
+  scrollbar-width: none;
+  cursor: grab;
+  outline: none;
+}
+.track:active { cursor: grabbing; }
+.track::-webkit-scrollbar { display: none; }
+
+.skeleton {
+  flex: 0 0 min(380px, 82vw);
+  height: 520px;
+  border-radius: 24px;
+  background: linear-gradient(90deg, var(--sand) 25%, #ebe8e2 37%, var(--sand) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+.empty { color: var(--muted); padding-block: 40px; }
+
+@media (max-width: 640px) {
+  .head { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live i, .skeleton { animation: none; }
+}

@@ -1,0 +1,541 @@
+<!doctype html>
+<!--
+  TEMPLATE LANDING PAGE EDITORIAL — HTML + Tailwind (CDN)
+  Semua teks, gambar, dan warna di bawah adalah CONTOH. Ganti seluruhnya sesuai bisnis.
+  Ikuti SKILL.md dan references/design-system.md. Jangan ubah struktur/ritme layout tanpa alasan.
+  Untuk produksi: ganti CDN dengan Tailwind CLI (lihat SKILL.md).
+-->
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Namabrand — Tagline singkat bisnis Anda</title>
+  <meta name="description" content="Satu kalimat deskripsi bisnis, 140–160 karakter." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter Tight"', 'system-ui', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+          },
+          colors: {
+            ink: '#141414',     // teks utama
+            muted: '#6b6b6b',   // teks sekunder
+            line: '#e7e5e1',    // garis tipis
+            sand: '#f5f3ef',    // permukaan lembut (kartu, ikon)
+            dark: '#2b2118',    // panel gelap — SESUAIKAN dengan warna brand (lihat business-presets.md)
+            accent: '#c9892f',  // aksen kecil (bintang, penanda) — SESUAIKAN
+          },
+        },
+      },
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer base {
+      html { scroll-behavior: smooth; }
+      body { @apply font-sans text-ink bg-white antialiased; }
+      /* Semua <em> = aksen serif miring. Inilah ciri tipografi utama. */
+      em { @apply font-serif italic font-normal; }
+    }
+    @layer components {
+      .wrap { @apply mx-auto w-full max-w-[1240px] px-[clamp(20px,5vw,72px)]; }
+      .label { @apply text-xs; }
+      .h-section { @apply text-[clamp(32px,4.4vw,52px)] leading-[1.08] tracking-[-0.03em] font-normal; }
+      .h-section em { @apply text-[1.06em] tracking-[-0.01em]; }
+      .pill-btn { @apply inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-medium transition hover:-translate-y-0.5; }
+    }
+  </style>
+
+  <style>
+    /* Tab navbar putih dengan sudut cekung (notch) */
+    .notch { --r: 26px; }
+    .notch::before, .notch::after { content: ''; position: absolute; top: 0; width: var(--r); height: var(--r); }
+    .notch::before { left: calc(var(--r) * -1); background: radial-gradient(circle at 0 100%, transparent var(--r), #fff calc(var(--r) + .5px)); }
+    .notch::after { right: calc(var(--r) * -1); background: radial-gradient(circle at 100% 100%, transparent var(--r), #fff calc(var(--r) + .5px)); }
+    .notch-end::after { display: none; }
+
+    /* Slideshow hero */
+    .slide { opacity: 0; transform: scale(1.06); transition: opacity 1.4s ease, transform 8s ease-out; }
+    .slide.on { opacity: 1; transform: none; }
+    .tab-bar::after { content: ''; position: absolute; inset: 0; background: #fff; transform: scaleX(0); transform-origin: left; }
+    .tab-on .tab-bar::after { animation: fill var(--dur, 6500ms) linear forwards; }
+    .paused .tab-on .tab-bar::after { animation: none; }
+    @keyframes fill { to { transform: scaleX(1); } }
+
+    /* Carousel */
+    .track {
+      --g: clamp(20px, 5vw, 72px);
+      padding-inline: max(var(--g), calc((100vw - 1240px) / 2 + var(--g)));
+      scroll-padding-inline: max(var(--g), calc((100vw - 1240px) / 2 + var(--g)));
+      scrollbar-width: none;
+    }
+    .track::-webkit-scrollbar { display: none; }
+
+    /* Reveal saat scroll */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .slide { transform: none; transition: opacity .6s ease; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Ikon: sprite SVG inline (gaya garis 1.8px). Pakai: <svg class="icon"><use href="#i-nama"/></svg> -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+      <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-5.6 7-11.2A7 7 0 0 0 5 9.8C5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.5-3.4 3-5 6-5s5.5 1.6 6 5M16 5.2a3 3 0 0 1 0 5.6M18 15.4c1.8.6 2.8 2.2 3 4.6"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9Z"/><circle cx="8" cy="8" r="1.4"/></symbol>
+      <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/></symbol>
+      <symbol id="i-ruler" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h4M3 15h4M9 3v4M15 3v4"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.9 6.4.7-4.8 4.3 1.4 6.3L12 16.7 6.3 20l1.4-6.3L2.9 9.4l6.4-.7z"/></symbol>
+    </defs>
+  </svg>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="relative p-1 sm:p-1.5">
+      <div id="hero" class="relative isolate min-h-[720px] overflow-hidden rounded-[20px] bg-[#0c1a24] text-white sm:min-h-[min(92vh,820px)] sm:rounded-[26px]">
+        <!-- 3 slide: siang / senja / malam (atau 3 suasana yang berbeda pada bisnis lain) -->
+        <img class="slide on absolute inset-0 -z-20 h-full w-full object-cover" src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=2000&q=80" alt="Deskripsi gambar 1" fetchpriority="high" />
+        <img class="slide absolute inset-0 -z-20 h-full w-full object-cover" src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=2000&q=80" alt="" aria-hidden="true" />
+        <img class="slide absolute inset-0 -z-20 h-full w-full object-cover" src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=80" alt="" aria-hidden="true" />
+        <div class="absolute inset-0 -z-10 bg-gradient-to-r from-[#081018]/45 to-transparent to-65%"></div>
+        <div class="absolute inset-0 -z-10 bg-gradient-to-b from-[#081018]/35 via-transparent via-40% to-[#081018]/25"></div>
+
+        <div class="max-w-[980px] px-5 pt-[92px] sm:px-[38px] sm:pt-32">
+          <h1 class="text-[clamp(48px,9vw,116px)] font-normal leading-[.98] tracking-[-0.035em]">
+            Kata utama
+            <em class="mt-0 block tracking-[-0.01em] sm:ml-[.8em] sm:whitespace-nowrap ml-[.4em]">aksen miring.</em>
+          </h1>
+          <p class="mt-8 max-w-[480px] text-[clamp(15px,1.35vw,18px)] leading-[1.55] text-white/90">
+            Satu–dua kalimat konkret tentang apa yang Anda tawarkan dan untuk siapa. Hindari klise.
+          </p>
+        </div>
+
+        <!-- Pemilih suasana + progress -->
+        <div id="hero-tabs" class="absolute bottom-[390px] left-5 z-10 flex gap-[18px] sm:bottom-[300px] lg:bottom-[104px] lg:left-auto lg:right-7" role="tablist" aria-label="Pilih suasana">
+          <button role="tab" class="tab-on grid w-[78px] gap-2 text-left text-[12.5px] text-white transition" data-i="0"><span>Siang</span><i class="tab-bar relative block h-0.5 overflow-hidden bg-white/30"></i></button>
+          <button role="tab" class="grid w-[78px] gap-2 text-left text-[12.5px] text-white/65 transition hover:text-white" data-i="1"><span>Senja</span><i class="tab-bar relative block h-0.5 overflow-hidden bg-white/30"></i></button>
+          <button role="tab" class="grid w-[78px] gap-2 text-left text-[12.5px] text-white/65 transition hover:text-white" data-i="2"><span>Malam</span><i class="tab-bar relative block h-0.5 overflow-hidden bg-white/30"></i></button>
+        </div>
+
+        <!-- Bar pencarian/booking melayang (pill) -->
+        <form id="bar" class="absolute inset-x-2.5 bottom-2.5 z-10 grid grid-cols-1 gap-1.5 rounded-[28px] bg-white p-2 text-ink sm:grid-cols-2 lg:inset-x-3.5 lg:bottom-3.5 lg:grid-cols-[repeat(4,1fr)_auto] lg:rounded-full" onsubmit="event.preventDefault();document.getElementById('layanan').scrollIntoView({behavior:'smooth'})">
+          <div class="select relative min-w-0" data-select data-options="Semua kategori|Kategori A|Kategori B|Kategori C" data-default="0">
+            <button type="button" class="flex w-full items-center gap-3 rounded-full py-1.5 pl-2 pr-4 text-left transition hover:bg-sand" aria-haspopup="listbox" aria-expanded="false">
+              <span class="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-full bg-sand"><svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-tag"/></svg></span>
+              <span class="flex min-w-0 flex-1 flex-col leading-tight"><span class="text-[11px] text-muted">Kategori</span><span data-value class="truncate text-sm font-medium"></span></span>
+              <svg class="h-3.5 w-3.5 shrink-0 fill-none stroke-muted stroke-2 transition [stroke-linecap:round] [stroke-linejoin:round]" data-chev><use href="#i-chevron"/></svg>
+            </button>
+          </div>
+          <div class="select relative min-w-0" data-select data-options="Semua lokasi|Jakarta|Bandung|Bali" data-default="0">
+            <button type="button" class="flex w-full items-center gap-3 rounded-full py-1.5 pl-2 pr-4 text-left transition hover:bg-sand" aria-haspopup="listbox" aria-expanded="false">
+              <span class="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-full bg-sand"><svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-pin"/></svg></span>
+              <span class="flex min-w-0 flex-1 flex-col leading-tight"><span class="text-[11px] text-muted">Lokasi</span><span data-value class="truncate text-sm font-medium"></span></span>
+              <svg class="h-3.5 w-3.5 shrink-0 fill-none stroke-muted stroke-2 transition [stroke-linecap:round] [stroke-linejoin:round]" data-chev><use href="#i-chevron"/></svg>
+            </button>
+          </div>
+          <div class="select relative min-w-0" data-select data-options="1 orang|2 orang|3 orang|4 orang|5 orang" data-default="1">
+            <button type="button" class="flex w-full items-center gap-3 rounded-full py-1.5 pl-2 pr-4 text-left transition hover:bg-sand" aria-haspopup="listbox" aria-expanded="false">
+              <span class="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-full bg-sand"><svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-users"/></svg></span>
+              <span class="flex min-w-0 flex-1 flex-col leading-tight"><span class="text-[11px] text-muted">Jumlah</span><span data-value class="truncate text-sm font-medium"></span></span>
+              <svg class="h-3.5 w-3.5 shrink-0 fill-none stroke-muted stroke-2 transition [stroke-linecap:round] [stroke-linejoin:round]" data-chev><use href="#i-chevron"/></svg>
+            </button>
+          </div>
+          <div class="select relative min-w-0" data-select data-align="right" data-options="Semua anggaran|Di bawah Rp500 rb|Rp500 rb – Rp1 jt|Di atas Rp1 jt" data-default="0">
+            <button type="button" class="flex w-full items-center gap-3 rounded-full py-1.5 pl-2 pr-4 text-left transition hover:bg-sand" aria-haspopup="listbox" aria-expanded="false">
+              <span class="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-full bg-sand"><svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-wallet"/></svg></span>
+              <span class="flex min-w-0 flex-1 flex-col leading-tight"><span class="text-[11px] text-muted">Anggaran</span><span data-value class="truncate text-sm font-medium"></span></span>
+              <svg class="h-3.5 w-3.5 shrink-0 fill-none stroke-muted stroke-2 transition [stroke-linecap:round] [stroke-linejoin:round]" data-chev><use href="#i-chevron"/></svg>
+            </button>
+          </div>
+          <button type="submit" class="h-[52px] rounded-full bg-ink px-9 text-sm font-medium text-white transition hover:bg-[#333] sm:col-span-2 lg:col-span-1">Cari</button>
+        </form>
+      </div>
+
+      <!-- Navbar: tab putih menempel di tepi atas -->
+      <header class="absolute inset-x-0 top-0 z-20 h-20 text-[15.5px]">
+        <a href="#" class="absolute left-[38px] top-[34px] font-serif text-[34px] italic leading-none text-white max-sm:left-6 max-sm:top-6 max-sm:text-[28px]">namabrand</a>
+        <nav class="notch absolute left-1/2 top-0 hidden -translate-x-1/2 gap-[34px] rounded-b-[26px] bg-white px-10 pb-[22px] pt-5 font-medium md:flex" aria-label="Navigasi utama">
+          <a class="transition hover:opacity-55" href="#tentang">Tentang</a>
+          <a class="transition hover:opacity-55" href="#layanan">Layanan</a>
+          <a class="transition hover:opacity-55" href="#unggulan">Unggulan</a>
+          <a class="transition hover:opacity-55" href="#kontak">Kontak</a>
+        </nav>
+        <a href="#kontak" class="notch notch-end absolute right-0 top-0 hidden rounded-b-[26px] rounded-br-none bg-white py-5 pl-10 pr-[34px] font-medium transition hover:opacity-55 md:block">Hubungi kami</a>
+
+        <button id="burger" class="absolute right-0 top-0 grid h-12 w-[52px] place-items-center rounded-bl-2xl bg-white md:hidden" aria-label="Buka menu" aria-expanded="false">
+          <svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round]"><use href="#i-menu"/></svg>
+        </button>
+        <div id="sheet" class="absolute right-0 top-12 hidden min-w-[210px] flex-col gap-3 rounded-bl-[18px] bg-white px-[22px] pb-[18px] pt-2.5 text-[15px] font-medium md:!hidden">
+          <a href="#tentang">Tentang</a><a href="#layanan">Layanan</a><a href="#unggulan">Unggulan</a><a href="#kontak">Kontak</a>
+        </div>
+      </header>
+    </section>
+
+    <!-- ============ TENTANG + STATISTIK ============ -->
+    <section id="tentang" class="wrap pb-14 pt-16 sm:pt-[88px]">
+      <div class="reveal grid gap-4 md:grid-cols-[1fr_3fr] md:gap-8">
+        <span class="label pt-2.5">Tentang Kami</span>
+        <div>
+          <p class="max-w-[760px] text-[clamp(26px,3vw,36px)] leading-[1.25] tracking-[-0.02em]">
+            Kami menangani <em class="text-[1.08em] tracking-normal">semua jenis</em> kebutuhan klien dengan pendekatan yang <em class="text-[1.08em] tracking-normal">rapi</em> dan <em class="text-[1.08em] tracking-normal">personal</em>.
+          </p>
+          <dl class="mt-14 grid grid-cols-2 gap-x-[clamp(32px,6vw,80px)] gap-y-6 md:grid-cols-4 md:justify-start md:[grid-template-columns:repeat(4,auto)]">
+            <div><dt class="font-serif text-[clamp(34px,4vw,46px)] italic leading-[1.1] tracking-[-0.03em]">2016</dt><dd class="mt-1.5 text-[11.5px] text-muted">Tahun berdiri</dd></div>
+            <div><dt class="font-serif text-[clamp(34px,4vw,46px)] italic leading-[1.1] tracking-[-0.03em]">48</dt><dd class="mt-1.5 text-[11.5px] text-muted">Proyek selesai</dd></div>
+            <div><dt class="font-serif text-[clamp(34px,4vw,46px)] italic leading-[1.1] tracking-[-0.03em]">120</dt><dd class="mt-1.5 text-[11.5px] text-muted">Anggota tim</dd></div>
+            <div><dt class="font-serif text-[clamp(34px,4vw,46px)] italic leading-[1.1] tracking-[-0.03em]">18.400</dt><dd class="mt-1.5 text-[11.5px] text-muted">Pelanggan dilayani</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALERI BERTINGKAT (4 kartu) ============ -->
+    <section class="wrap">
+      <div class="reveal grid grid-cols-2 items-start gap-[18px] pb-12 lg:grid-cols-4 lg:pb-[72px]">
+        <div class="aspect-[4/5] overflow-hidden rounded-[18px] bg-sand"><img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80" alt="Deskripsi 1" loading="lazy" /></div>
+        <div class="mt-7 aspect-[4/5] overflow-hidden rounded-[18px] bg-sand"><img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="https://images.unsplash.com/photo-1455587734955-081b22074882?auto=format&fit=crop&w=800&q=80" alt="Deskripsi 2" loading="lazy" /></div>
+        <!-- Kartu bertinta: label kiri-atas + tombol panah putih bulat kanan-atas -->
+        <a href="#layanan" class="group relative aspect-[4/5] overflow-hidden rounded-[18px] bg-sand lg:mt-14">
+          <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80" alt="Deskripsi 3" loading="lazy" />
+          <span class="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent to-45%"></span>
+          <span class="absolute left-4 top-4 max-w-[6ch] text-sm leading-[1.15] text-white">Label kartu</span>
+          <span class="absolute right-3 top-3 grid h-[30px] w-[30px] place-items-center rounded-full bg-white"><svg class="h-3.5 w-3.5 fill-none stroke-ink stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-ur"/></svg></span>
+        </a>
+        <div class="mt-7 aspect-[4/5] overflow-hidden rounded-[18px] bg-sand lg:mt-0"><img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Deskripsi 4" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <!-- ============ CAROUSEL KARTU INFINITE (layanan/produk/kamar/menu) ============ -->
+    <section id="layanan" class="pb-24 pt-6">
+      <div class="wrap reveal mb-9 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+        <div>
+          <span class="label">Layanan</span>
+          <h2 class="h-section mt-3.5 max-w-[14em]">Pilih yang <em>paling pas</em> untuk kebutuhan Anda</h2>
+        </div>
+        <div class="flex gap-2.5">
+          <button id="prev" class="grid h-[46px] w-[46px] place-items-center rounded-full border border-ink transition hover:bg-ink hover:text-white" aria-label="Sebelumnya"><svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-l"/></svg></button>
+          <button id="next" class="grid h-[46px] w-[46px] place-items-center rounded-full border border-ink transition hover:bg-ink hover:text-white" aria-label="Berikutnya"><svg class="h-[18px] w-[18px] fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-r"/></svg></button>
+        </div>
+      </div>
+
+      <!-- Kartu asli saja; klon dibuat oleh JS. Tambah/kurangi <article> bebas (min. 4). -->
+      <div id="track" class="track flex cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto outline-none active:cursor-grabbing" tabindex="0" role="region" aria-label="Daftar layanan">
+        <article class="group flex w-[min(380px,82vw)] shrink-0 snap-start select-none flex-col overflow-hidden rounded-3xl bg-sand">
+          <div class="relative m-2 mb-0 aspect-[4/3] overflow-hidden rounded-[18px]">
+            <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=900&q=80" alt="Deskripsi layanan 1" loading="lazy" draggable="false" />
+            <span class="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[11.5px] font-medium">Terpopuler</span>
+          </div>
+          <div class="flex flex-1 flex-col px-[22px] pb-[22px] pt-5">
+            <h3 class="font-serif text-[32px] italic leading-[1.1]">Nama Layanan 1</h3>
+            <p class="mt-2 min-h-[3em] text-[13.5px] text-muted">Deskripsi satu–dua kalimat yang konkret.</p>
+            <ul class="mt-[18px] flex flex-wrap gap-2 text-xs">
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-clock"/></svg>60 menit</li>
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-users"/></svg>2 orang</li>
+            </ul>
+            <div class="mt-auto flex items-center justify-between pt-[22px]">
+              <p class="text-xs text-muted"><strong class="text-[19px] font-medium tracking-[-0.01em] text-ink">Rp850.000</strong> / sesi</p>
+              <a href="#kontak" class="grid h-[42px] w-[42px] place-items-center rounded-full bg-ink text-white transition hover:rotate-45" aria-label="Pesan Nama Layanan 1"><svg class="h-4 w-4 fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-ur"/></svg></a>
+            </div>
+          </div>
+        </article>
+        <article class="group flex w-[min(380px,82vw)] shrink-0 snap-start select-none flex-col overflow-hidden rounded-3xl bg-sand">
+          <div class="relative m-2 mb-0 aspect-[4/3] overflow-hidden rounded-[18px]">
+            <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1568495248636-6432b97bd949?auto=format&fit=crop&w=900&q=80" alt="Deskripsi Layanan 2" loading="lazy" draggable="false" />
+          </div>
+          <div class="flex flex-1 flex-col px-[22px] pb-[22px] pt-5">
+            <h3 class="font-serif text-[32px] italic leading-[1.1]">Nama Layanan 2</h3>
+            <p class="mt-2 min-h-[3em] text-[13.5px] text-muted">Deskripsi satu–dua kalimat yang konkret.</p>
+            <ul class="mt-[18px] flex flex-wrap gap-2 text-xs">
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-clock"/></svg>90 menit</li>
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-users"/></svg>3 orang</li>
+            </ul>
+            <div class="mt-auto flex items-center justify-between pt-[22px]">
+              <p class="text-xs text-muted"><strong class="text-[19px] font-medium tracking-[-0.01em] text-ink">Rp1.250.000</strong> / sesi</p>
+              <a href="#kontak" class="grid h-[42px] w-[42px] place-items-center rounded-full bg-ink text-white transition hover:rotate-45" aria-label="Pesan Nama Layanan 2"><svg class="h-4 w-4 fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-ur"/></svg></a>
+            </div>
+          </div>
+        </article>
+        <article class="group flex w-[min(380px,82vw)] shrink-0 snap-start select-none flex-col overflow-hidden rounded-3xl bg-sand">
+          <div class="relative m-2 mb-0 aspect-[4/3] overflow-hidden rounded-[18px]">
+            <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80" alt="Deskripsi Layanan 3" loading="lazy" draggable="false" />
+          </div>
+          <div class="flex flex-1 flex-col px-[22px] pb-[22px] pt-5">
+            <h3 class="font-serif text-[32px] italic leading-[1.1]">Nama Layanan 3</h3>
+            <p class="mt-2 min-h-[3em] text-[13.5px] text-muted">Deskripsi satu–dua kalimat yang konkret.</p>
+            <ul class="mt-[18px] flex flex-wrap gap-2 text-xs">
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-clock"/></svg>120 menit</li>
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-users"/></svg>4 orang</li>
+            </ul>
+            <div class="mt-auto flex items-center justify-between pt-[22px]">
+              <p class="text-xs text-muted"><strong class="text-[19px] font-medium tracking-[-0.01em] text-ink">Rp1.650.000</strong> / sesi</p>
+              <a href="#kontak" class="grid h-[42px] w-[42px] place-items-center rounded-full bg-ink text-white transition hover:rotate-45" aria-label="Pesan Nama Layanan 3"><svg class="h-4 w-4 fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-ur"/></svg></a>
+            </div>
+          </div>
+        </article>
+        <article class="group flex w-[min(380px,82vw)] shrink-0 snap-start select-none flex-col overflow-hidden rounded-3xl bg-sand">
+          <div class="relative m-2 mb-0 aspect-[4/3] overflow-hidden rounded-[18px]">
+            <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=900&q=80" alt="Deskripsi Layanan 4" loading="lazy" draggable="false" />
+          </div>
+          <div class="flex flex-1 flex-col px-[22px] pb-[22px] pt-5">
+            <h3 class="font-serif text-[32px] italic leading-[1.1]">Nama Layanan 4</h3>
+            <p class="mt-2 min-h-[3em] text-[13.5px] text-muted">Deskripsi satu–dua kalimat yang konkret.</p>
+            <ul class="mt-[18px] flex flex-wrap gap-2 text-xs">
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-clock"/></svg>150 menit</li>
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5"><svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[1.8]"><use href="#i-users"/></svg>2 orang</li>
+            </ul>
+            <div class="mt-auto flex items-center justify-between pt-[22px]">
+              <p class="text-xs text-muted"><strong class="text-[19px] font-medium tracking-[-0.01em] text-ink">Rp2.450.000</strong> / sesi</p>
+              <a href="#kontak" class="grid h-[42px] w-[42px] place-items-center rounded-full bg-ink text-white transition hover:rotate-45" aria-label="Pesan Nama Layanan 4"><svg class="h-4 w-4 fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-ur"/></svg></a>
+            </div>
+          </div>
+        </article>
+        <!-- Tambah <article> lain dengan menyalin salah satu blok di atas (minimal 4 kartu agar loop terasa wajar) -->
+      </div>
+
+      <div class="wrap">
+        <div class="relative mt-8 h-0.5 bg-line" aria-hidden="true"><span id="thumb" class="absolute left-0 top-0 h-full bg-ink transition-[left] duration-300"></span></div>
+        <p id="count" class="mt-3 text-xs tabular-nums text-muted"></p>
+      </div>
+    </section>
+
+    <!-- ============ PANEL GELAP UNGGULAN ============ -->
+    <section id="unggulan" class="wrap">
+      <div class="reveal relative isolate min-h-[600px] overflow-hidden rounded-[20px] bg-dark text-white">
+        <img class="absolute inset-0 -z-20 h-full w-full object-cover" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80" alt="Deskripsi gambar panel" loading="lazy" />
+        <div class="absolute inset-0 -z-10 bg-dark/85 md:bg-gradient-to-r md:from-dark/95 md:via-dark/80 md:via-[38%] md:to-dark/10 md:to-75%"></div>
+        <div class="max-w-[520px] p-[clamp(32px,5vw,64px)]">
+          <h2 class="text-[clamp(44px,6vw,68px)] font-normal leading-none tracking-[-0.03em]">Unggulan <em class="block">kami</em></h2>
+          <p class="mt-[22px] max-w-[400px] text-sm leading-relaxed text-white/80">Satu kalimat yang menjelaskan nilai tambah utama bisnis Anda.</p>
+          <ul class="mt-10 grid gap-x-7 gap-y-6 sm:grid-cols-2">
+            <li class="border-t border-white/25 pt-3.5"><h3 class="text-[14.5px] font-medium">Poin 1</h3><p class="mt-1 text-[12.5px] leading-normal text-white/65">Penjelasan singkat.</p></li>
+            <li class="border-t border-white/25 pt-3.5"><h3 class="text-[14.5px] font-medium">Poin 2</h3><p class="mt-1 text-[12.5px] leading-normal text-white/65">Penjelasan singkat.</p></li>
+            <li class="border-t border-white/25 pt-3.5"><h3 class="text-[14.5px] font-medium">Poin 3</h3><p class="mt-1 text-[12.5px] leading-normal text-white/65">Penjelasan singkat.</p></li>
+            <li class="border-t border-white/25 pt-3.5"><h3 class="text-[14.5px] font-medium">Poin 4</h3><p class="mt-1 text-[12.5px] leading-normal text-white/65">Penjelasan singkat.</p></li>
+          </ul>
+          <a href="#kontak" class="pill-btn mt-10 bg-white text-ink">Pelajari lebih lanjut</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONI ============ -->
+    <section class="wrap pt-16 lg:pt-[104px]">
+      <div class="reveal">
+        <div class="mb-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <span class="label">Ulasan Pelanggan</span>
+            <h2 class="h-section mt-3.5 max-w-[13em]">Kata mereka yang <em>sudah mencoba</em></h2>
+          </div>
+          <p class="flex items-baseline gap-3"><strong class="font-serif text-[64px] font-normal italic leading-none">4,9</strong><span class="text-[13px] text-muted">dari 5 · 1.280 ulasan</span></p>
+        </div>
+        <div class="grid items-stretch gap-[18px] lg:grid-cols-3">
+          <figure class="m-0 flex flex-col rounded-[22px] bg-sand p-7">
+            <div class="flex gap-[3px] text-accent" role="img" aria-label="Rating 5 dari 5"><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg></div>
+            <blockquote class="mb-8 mt-[22px] flex-1 text-[17px] leading-normal">Ulasan konkret, menyebut detail spesifik (bukan pujian generik).</blockquote>
+            <figcaption class="flex items-center gap-3"><span class="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-white font-serif text-[17px] italic" aria-hidden="true">DA</span><span><strong class="block text-sm font-medium">Dewi Anggraini</strong><small class="block text-xs text-muted">Jakarta · Layanan 1</small></span></figcaption>
+          </figure>
+          <!-- kartu tengah: gelap sebagai penekanan -->
+          <figure class="m-0 flex flex-col rounded-[22px] bg-dark p-7 text-white">
+            <div class="flex gap-[3px] text-accent" role="img" aria-label="Rating 5 dari 5"><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg></div>
+            <blockquote class="mb-8 mt-[22px] flex-1 text-[17px] leading-normal">Ulasan kedua dengan konteks berbeda dari yang pertama.</blockquote>
+            <figcaption class="flex items-center gap-3"><span class="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-white font-serif text-[17px] italic text-ink" aria-hidden="true">BP</span><span><strong class="block text-sm font-medium">Bagas Pratama</strong><small class="block text-xs text-white/60">Surabaya · Layanan 2</small></span></figcaption>
+          </figure>
+          <figure class="m-0 flex flex-col rounded-[22px] bg-sand p-7">
+            <div class="flex gap-[3px] text-accent" role="img" aria-label="Rating 5 dari 5"><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg><svg class="h-[15px] w-[15px] fill-current"><use href="#i-star"/></svg></div>
+            <blockquote class="mb-8 mt-[22px] flex-1 text-[17px] leading-normal">Ulasan ketiga yang menyorot sisi lain: kecepatan, harga, atau layanan purna-jual.</blockquote>
+            <figcaption class="flex items-center gap-3"><span class="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-full bg-white font-serif text-[17px] italic" aria-hidden="true">MK</span><span><strong class="block text-sm font-medium">Maya Kusuma</strong><small class="block text-xs text-muted">Bandung · Layanan 3</small></span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section id="kontak" class="wrap pb-6 pt-16 lg:pt-24">
+      <div class="reveal relative isolate grid min-h-[420px] overflow-hidden rounded-[20px] text-white">
+        <img class="absolute inset-0 -z-20 h-full w-full object-cover" src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1800&q=80" alt="Deskripsi gambar CTA" loading="lazy" />
+        <div class="absolute inset-0 -z-10 bg-black/45"></div>
+        <div class="max-w-[600px] self-center justify-self-center px-6 py-12 text-center">
+          <h2 class="text-[clamp(38px,5.4vw,64px)] font-normal leading-[1.02] tracking-[-0.03em]">Siap memulai <em>bersama kami?</em></h2>
+          <p class="mx-auto mt-[18px] max-w-[420px] text-sm text-white/85">Kirim kebutuhan Anda. Kami membalas dalam satu jam pada jam operasional.</p>
+          <a href="https://wa.me/6281234567890" target="_blank" rel="noreferrer" class="pill-btn mt-[30px] bg-white text-ink">Hubungi via WhatsApp <svg class="h-4 w-4 fill-none stroke-current stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-arrow-ur"/></svg></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="wrap pb-8 pt-[72px]">
+    <div class="grid gap-10 border-b border-line pb-12 md:grid-cols-[1fr_2.4fr]">
+      <a href="#" class="font-serif text-[40px] italic leading-none">namabrand</a>
+      <div class="grid grid-cols-2 gap-7 text-[13.5px] md:grid-cols-4">
+        <div><h4 class="mb-3 text-xs font-normal text-muted">Alamat</h4><p class="mb-1.5">Jl. Contoh No. 1, Kota, Provinsi</p><p>Senin–Sabtu, 09.00–18.00</p></div>
+        <div><h4 class="mb-3 text-xs font-normal text-muted">Kontak</h4><p class="mb-1.5"><a class="hover:underline" href="tel:+6281234567890">+62 812-3456-7890</a></p><p><a class="hover:underline" href="mailto:halo@namabrand.id">halo@namabrand.id</a></p></div>
+        <div><h4 class="mb-3 text-xs font-normal text-muted">Jelajahi</h4><p class="mb-1.5"><a class="hover:underline" href="#tentang">Tentang</a></p><p class="mb-1.5"><a class="hover:underline" href="#layanan">Layanan</a></p><p><a class="hover:underline" href="#kontak">Kontak</a></p></div>
+        <div><h4 class="mb-3 text-xs font-normal text-muted">Ikuti</h4><p class="mb-1.5"><a class="hover:underline" href="#">Instagram</a></p><p class="mb-1.5"><a class="hover:underline" href="#">Facebook</a></p><p><a class="hover:underline" href="#">TikTok</a></p></div>
+      </div>
+    </div>
+    <p class="mt-6 text-xs text-muted">© <span id="year"></span> Namabrand. Seluruh hak cipta dilindungi.</p>
+  </footer>
+
+  <script>
+    const $ = (s, r = document) => r.querySelector(s)
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)]
+
+    /* Tahun footer */
+    $('#year').textContent = new Date().getFullYear()
+
+    /* Reveal saat scroll */
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+    }), { threshold: 0.15 })
+    $$('.reveal').forEach((el) => io.observe(el))
+
+    /* Menu mobile */
+    const burger = $('#burger'), sheet = $('#sheet')
+    burger.addEventListener('click', () => {
+      const open = sheet.classList.toggle('hidden') === false
+      sheet.classList.toggle('flex', open)
+      burger.setAttribute('aria-expanded', open)
+    })
+    $$('a', sheet).forEach((a) => a.addEventListener('click', () => { sheet.classList.add('hidden'); sheet.classList.remove('flex') }))
+
+    /* Slideshow hero: auto-ganti, jeda saat hover, klik tab untuk pindah */
+    ;(() => {
+      const hero = $('#hero'), slides = $$('.slide', hero), tabs = $$('#hero-tabs button')
+      const INTERVAL = 6500
+      let i = 0, timer
+      const go = (n) => {
+        i = (n + slides.length) % slides.length
+        slides.forEach((s, k) => {
+          s.classList.toggle('on', k === i)
+          s.setAttribute('aria-hidden', k !== i)
+        })
+        tabs.forEach((t, k) => {
+          t.classList.toggle('tab-on', k === i)
+          t.classList.toggle('text-white', k === i)
+          t.classList.toggle('text-white/65', k !== i)
+          t.setAttribute('aria-selected', k === i)
+          $('.tab-bar', t).style.setProperty('--dur', INTERVAL + 'ms')
+        })
+        restart()
+      }
+      const restart = () => { clearTimeout(timer); if (!hero.classList.contains('paused')) timer = setTimeout(() => go(i + 1), INTERVAL) }
+      tabs.forEach((t, k) => t.addEventListener('click', () => go(k)))
+      hero.addEventListener('mouseenter', () => { hero.classList.add('paused'); clearTimeout(timer) })
+      hero.addEventListener('mouseleave', () => { hero.classList.remove('paused'); go(i) })
+      slides.forEach((s) => { const im = new Image(); im.src = s.src }) // preload
+      go(0)
+    })()
+
+    /* Dropdown kustom (pengganti <select>) */
+    $$('[data-select]').forEach((root) => {
+      const options = root.dataset.options.split('|')
+      const btn = $('button', root), valueEl = $('[data-value]', root), chev = $('[data-chev]', root)
+      let current = Number(root.dataset.default || 0)
+
+      const list = document.createElement('ul')
+      list.setAttribute('role', 'listbox')
+      list.className = 'hidden absolute bottom-[calc(100%+14px)] z-30 w-max min-w-full rounded-2xl border border-line bg-white p-2 shadow-[0_24px_60px_rgba(10,20,30,.28)] ' + (root.dataset.align === 'right' ? 'right-0' : 'left-0')
+      root.appendChild(list)
+
+      const render = () => {
+        valueEl.textContent = options[current]
+        list.innerHTML = ''
+        options.forEach((label, k) => {
+          const li = document.createElement('li')
+          li.setAttribute('role', 'option'); li.setAttribute('aria-selected', k === current)
+          li.innerHTML = `<button type="button" class="flex w-full items-center justify-between gap-4 whitespace-nowrap rounded-[13px] px-3.5 py-[11px] text-left text-sm transition hover:bg-sand focus-visible:bg-sand focus-visible:outline-none ${k === current ? 'font-semibold' : ''}">${label}${k === current ? '<svg class="h-[15px] w-[15px] fill-none stroke-current stroke-[2.2] [stroke-linecap:round] [stroke-linejoin:round]"><use href="#i-check"/></svg>' : ''}</button>`
+          $('button', li).addEventListener('click', () => { current = k; render(); close() })
+          list.appendChild(li)
+        })
+      }
+      const open = () => { list.classList.remove('hidden'); btn.setAttribute('aria-expanded', 'true'); chev.style.transform = 'rotate(180deg)'; $('li:nth-child(' + (current + 1) + ') button', list).focus() }
+      const close = () => { list.classList.add('hidden'); btn.setAttribute('aria-expanded', 'false'); chev.style.transform = '' }
+      btn.addEventListener('click', () => (list.classList.contains('hidden') ? open() : close()))
+      document.addEventListener('pointerdown', (e) => { if (!root.contains(e.target)) close() })
+      root.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { close(); btn.focus() }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault()
+          if (list.classList.contains('hidden')) return open()
+          const items = $$('button', list), k = items.indexOf(document.activeElement)
+          items[(k + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus()
+        }
+      })
+      render()
+    })
+
+    /* Carousel infinite: [klon][asli][klon], posisi dinormalkan diam-diam ke set tengah */
+    ;(() => {
+      const track = $('#track'), originals = [...track.children], n = originals.length
+      const clone = (el) => { const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); $$('a,button', c).forEach((x) => (x.tabIndex = -1)); return c }
+      originals.forEach((el) => track.insertBefore(clone(el), originals[0]))
+      originals.forEach((el) => track.appendChild(clone(el)))
+
+      const step = () => track.children[1].offsetLeft - track.children[0].offsetLeft
+      const setW = () => step() * n
+      const thumb = $('#thumb'), count = $('#count')
+      thumb.style.width = 100 / n + '%'
+
+      const sync = () => {
+        const pos = (((track.scrollLeft - setW()) % setW()) + setW()) % setW()
+        const idx = Math.round(pos / step()) % n
+        thumb.style.left = (idx * 100) / n + '%'
+        count.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0')
+      }
+      const normalize = () => {
+        const w = setW()
+        if (track.scrollLeft < w) track.scrollLeft += w
+        else if (track.scrollLeft >= w * 2) track.scrollLeft -= w
+      }
+      let t, dragging = false
+      const later = (ms) => { clearTimeout(t); t = setTimeout(() => { if (!dragging) normalize() }, ms) }
+      const place = () => { track.scrollLeft = setW(); sync() }
+
+      track.addEventListener('scroll', () => { sync(); later(140) })
+      window.addEventListener('resize', place)
+      place()
+
+      const by = (d) => { normalize(); track.scrollBy({ left: d * step(), behavior: 'smooth' }) }
+      $('#prev').addEventListener('click', () => by(-1))
+      $('#next').addEventListener('click', () => by(1))
+      track.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); by(1) }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); by(-1) }
+      })
+
+      // drag dengan mouse
+      let x0 = 0, l0 = 0
+      track.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse') return
+        normalize(); dragging = true; x0 = e.clientX; l0 = track.scrollLeft; track.style.scrollSnapType = 'none'
+      })
+      track.addEventListener('pointermove', (e) => { if (dragging) track.scrollLeft = l0 - (e.clientX - x0) })
+      const up = () => { if (!dragging) return; dragging = false; track.style.scrollSnapType = ''; later(400) }
+      track.addEventListener('pointerup', up)
+      track.addEventListener('pointerleave', up)
+    })()
+  </script>
+</body>
+</html>

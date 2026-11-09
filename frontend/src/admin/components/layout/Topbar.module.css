@@ -1,0 +1,34 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 68px;
+  padding: 0 clamp(16px, 3vw, 32px);
+  background: color-mix(in srgb, var(--a-bg) 82%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--a-border);
+}
+
+.menu {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--a-border);
+  border-radius: 12px;
+  background: var(--a-surface);
+  transition: background .15s;
+}
+.menu:hover { background: var(--a-surface-2); }
+
+.crumb { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13.5px; color: var(--a-muted); }
+.crumb strong { color: var(--a-text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+@media (max-width: 480px) {
+  .crumb span { display: none; }
+}

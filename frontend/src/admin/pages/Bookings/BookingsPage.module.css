@@ -1,0 +1,10 @@
+.code { font-family: ui-monospace, 'Cascadia Mono', Menlo, monospace; font-size: 12.5px; letter-spacing: .02em; white-space: nowrap; }
+.stack { text-align: left; }
+.strong { font-weight: 500; }
+.sub { font-size: 12.5px; color: var(--a-muted); }
+.money { font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.error { padding: 28px; color: var(--a-red-fg); }
+
+@media (max-width: 767px) {
+  .stack { text-align: right; }
+}

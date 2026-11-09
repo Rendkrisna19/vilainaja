@@ -1,0 +1,11 @@
+.form { display: grid; gap: 16px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--muted); cursor: pointer; }
+.check input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--ink); }
+
+.or { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 12.5px; }
+.or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+@media (max-width: 520px) {
+  .two { grid-template-columns: 1fr; }
+}

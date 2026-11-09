@@ -1,0 +1,19 @@
+.stack { text-align: left; }
+.strong { font-weight: 500; }
+.sub { font-size: 12.5px; color: var(--a-muted); }
+.message {
+  max-width: 340px;
+  font-size: 13px;
+  color: var(--a-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+}
+.error { padding: 28px; color: var(--a-red-fg); }
+
+@media (max-width: 767px) {
+  .stack { text-align: right; }
+  .message { text-align: right; max-width: 220px; }
+}

@@ -1,0 +1,25 @@
+.list {
+  display: grid;
+  gap: 2px;
+  min-width: 210px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.list button:hover, .list button:focus-visible { background: var(--sand); outline: none; }
+.selected { font-weight: 600; }

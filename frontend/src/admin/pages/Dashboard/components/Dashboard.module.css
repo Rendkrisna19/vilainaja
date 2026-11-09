@@ -1,0 +1,135 @@
+/* ---------- Stat cards ---------- */
+.stat {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+  border-radius: 20px;
+  box-shadow: var(--a-shadow);
+}
+.statIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--a-surface-2);
+  border: 1px solid var(--a-border);
+}
+.statBody { min-width: 0; flex: 1; }
+.statLabel { font-size: 12.5px; color: var(--a-muted); }
+.statValue {
+  margin-top: 4px;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 500;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.statHint { margin-top: 4px; font-size: 12px; color: var(--a-muted); }
+
+/* ---------- Chart ---------- */
+.chart {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(8px, 2vw, 22px);
+  align-items: end;
+  height: 270px;
+}
+.col { display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; min-width: 0; }
+.colValue { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.barArea { flex: 1; display: flex; align-items: flex-end; width: 100%; max-width: 64px; }
+.bar {
+  width: 100%;
+  border-radius: 10px 10px 4px 4px;
+  background: var(--a-primary);
+  opacity: .9;
+  transition: opacity .15s, height .5s ease;
+}
+.col:hover .bar { opacity: 1; background: var(--a-accent); }
+.colLabel { font-size: 12.5px; font-weight: 500; }
+.colSub { font-size: 11px; color: var(--a-muted); white-space: nowrap; }
+
+/* ---------- Status breakdown ---------- */
+.breakdown { display: grid; gap: 16px; }
+.breakTop { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 13px; }
+.breakTop strong { font-variant-numeric: tabular-nums; }
+.breakTrack { height: 8px; border-radius: 999px; background: var(--a-surface-2); overflow: hidden; }
+.breakFill { display: block; height: 100%; border-radius: 999px; transition: width .6s ease; background: currentColor; }
+.green { color: var(--a-green-fg); }
+.amber { color: var(--a-amber-fg); }
+.red { color: var(--a-red-fg); }
+.blue { color: var(--a-blue-fg); }
+.gray { color: var(--a-gray-fg); }
+
+/* ---------- Row list ---------- */
+.rows { display: grid; }
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--a-border);
+}
+.row:first-child { padding-top: 0; }
+.row:last-child { padding-bottom: 0; border-bottom: 0; }
+.rowLead { flex: none; }
+.rowMain { min-width: 0; flex: 1; }
+.rowTitle { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rowSub { font-size: 12.5px; color: var(--a-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rowEnd { flex: none; display: grid; justify-items: end; gap: 4px; font-size: 13px; }
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--a-surface-2);
+  border: 1px solid var(--a-border);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 17px;
+}
+.dateBox {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--a-surface-2);
+  border: 1px solid var(--a-border);
+  line-height: 1.1;
+}
+.dateBox strong { font-size: 17px; font-weight: 600; }
+.dateBox span { font-size: 10.5px; color: var(--a-muted); text-transform: uppercase; }
+
+/* ---------- Layout ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.grid2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-bottom: 20px; }
+.grid3 { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; }
+
+.link { font-size: 13px; color: var(--a-muted); }
+.link:hover { color: var(--a-text); text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 1200px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .grid3 > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .grid2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .stats { grid-template-columns: 1fr; }
+  .grid3 { grid-template-columns: 1fr; }
+  .chart { height: 230px; }
+  .colSub { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar, .breakFill { transition: none; }
+}

@@ -1,0 +1,58 @@
+.viewport {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 200;
+  display: grid;
+  gap: 10px;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  background: var(--a-surface);
+  color: var(--a-text);
+  border: 1px solid var(--a-border);
+  border-left-width: 4px;
+  border-radius: 14px;
+  box-shadow: var(--a-shadow-lg);
+  /* Tembus klik agar tidak menutupi tombol di bawahnya (mis. paginasi di kanan-bawah); hanya tombol × yang interaktif. */
+  pointer-events: none;
+  animation: in .25s ease;
+}
+.toast button { pointer-events: auto; }
+.toast p { flex: 1; margin: 0; font-size: 13.5px; line-height: 1.45; }
+.toast button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--a-muted);
+}
+.toast button:hover { background: var(--a-surface-2); color: var(--a-text); }
+
+.icon { flex: none; margin-top: 1px; }
+.success { border-left-color: var(--a-green-fg); }
+.success .icon { color: var(--a-green-fg); }
+.error { border-left-color: var(--a-red-fg); }
+.error .icon { color: var(--a-red-fg); }
+.info { border-left-color: var(--a-blue-fg); }
+.info .icon { color: var(--a-blue-fg); }
+
+@keyframes in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+}
+
+@media (max-width: 520px) {
+  .viewport { right: 16px; left: 16px; bottom: 16px; width: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}

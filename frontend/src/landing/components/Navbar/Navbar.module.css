@@ -1,0 +1,86 @@
+.nav {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 10;
+  height: 80px;
+  font-size: 15.5px;
+}
+
+.brand {
+  position: absolute;
+  top: 34px;
+  left: 38px;
+  color: #fff;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 34px;
+  line-height: 1;
+}
+
+/* Tab putih menempel di tepi atas dengan sudut cekung di kedua sisi */
+.tab {
+  --r: 26px;
+  position: absolute;
+  top: 0;
+  display: flex;
+  gap: 34px;
+  padding: 20px 40px 22px;
+  background: var(--paper);
+  border-radius: 0 0 var(--r) var(--r);
+  font-weight: 500;
+}
+.tab::before,
+.tab::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: var(--r);
+  height: var(--r);
+}
+.tab::before {
+  left: calc(var(--r) * -1);
+  background: radial-gradient(circle at 0 100%, transparent var(--r), var(--paper) calc(var(--r) + .5px));
+}
+.tab::after {
+  right: calc(var(--r) * -1);
+  background: radial-gradient(circle at 100% 100%, transparent var(--r), var(--paper) calc(var(--r) + .5px));
+}
+
+.center { left: 50%; transform: translateX(-50%); }
+.right { right: 0; padding-right: 34px; border-bottom-right-radius: 0; }
+.right::after { display: none; }
+
+.tab a, a.tab { transition: opacity .2s; }
+.tab a:hover, a.tab:hover { opacity: .55; }
+
+.burger, .sheet { display: none; }
+
+@media (max-width: 760px) {
+  .center, .right { display: none; }
+  .burger {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 52px;
+    height: 48px;
+    background: var(--paper);
+    border: 0;
+    border-radius: 0 0 0 16px;
+  }
+  .sheet {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    min-width: 200px;
+    padding: 10px 22px 18px;
+    background: var(--paper);
+    border-radius: 0 0 0 18px;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
