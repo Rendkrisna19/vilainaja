@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { APP_NAME } from '../../lib/env'
+import Logo from '../../lib/Logo'
 import '../../landing/styles/global.css'
 import s from './AuthShell.module.css'
 
@@ -11,7 +12,7 @@ export default function AuthShell({ title, accent, subtitle, children, footer })
   return (
     <div className={s.page}>
       <aside className={s.visual} style={{ backgroundImage: `url(${HERO})` }}>
-        <Link to="/" className={s.brand}>{APP_NAME}</Link>
+        <Link to="/" className={s.brand} aria-label={APP_NAME}><Logo tone="light" height={70} /></Link>
         <p className={s.quote}>
           Beristirahat <em>tanpa terburu-buru.</em>
         </p>

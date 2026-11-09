@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { BedDouble, CalendarCheck, ExternalLink, LayoutDashboard, LogOut, Settings, UserPlus, X } from 'lucide-react'
 import { APP_NAME } from '../../../lib/env'
+import Logo from '../../../lib/Logo'
 import { initials } from '../../../lib/format'
 import { NAV_ITEMS } from '../../lib/constants'
 import { useAuth } from '../../context/AuthContext'
@@ -21,7 +22,7 @@ export default function Sidebar({ open, collapsed, onClose }) {
     <aside className={s.sidebar} data-open={open} data-collapsed={collapsed} aria-label="Menu admin">
       <div className={s.brandRow}>
         <NavLink to="/admin/dashboard" className={s.brand}>
-          <span className={s.logo}>{APP_NAME}</span>
+          <Logo tone="auto" height={40} alt={APP_NAME} />
           <span className={s.badge}>Admin</span>
         </NavLink>
         <button className={s.closeBtn} onClick={onClose} aria-label="Tutup menu">

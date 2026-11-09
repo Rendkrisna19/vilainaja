@@ -1,11 +1,12 @@
 import { brand, footer, navLinks } from '../../data/site'
+import Logo from '../../../lib/Logo'
 import styles from './Footer.module.css'
 
 export default function Footer() {
   return (
     <footer className={`container ${styles.footer}`}>
       <div className={styles.top}>
-        <a href="#" className={styles.brand}>{brand}</a>
+        <a href="#" className={styles.brand} aria-label={brand}><Logo tone="dark" height={64} /></a>
 
         <div className={styles.cols}>
           <div>

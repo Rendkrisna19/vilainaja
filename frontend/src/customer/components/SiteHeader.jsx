@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { CalendarCheck, ChevronDown, LogOut } from 'lucide-react'
 import { APP_NAME } from '../../lib/env'
+import Logo from '../../lib/Logo'
 import { initials } from '../../lib/format'
 import { useCustomerAuth } from '../context/CustomerAuthContext'
 import s from './SiteHeader.module.css'
@@ -26,7 +27,7 @@ export default function SiteHeader() {
   return (
     <header className={s.header}>
       <div className={s.inner}>
-        <Link to="/" className={s.brand}>{APP_NAME}</Link>
+        <Link to="/" className={s.brand} aria-label={APP_NAME}><Logo tone="dark" height={44} /></Link>
 
         <nav className={s.nav} aria-label="Navigasi">
           <Link to="/#kamar">Kamar</Link>

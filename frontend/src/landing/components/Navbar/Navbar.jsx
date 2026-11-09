@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { brand, navLinks } from '../../data/site'
 import { useCustomerAuth } from '../../../customer/context/CustomerAuthContext'
+import Logo from '../../../lib/Logo'
 import { Menu, Close } from '../ui/Icons'
 import styles from './Navbar.module.css'
 
@@ -13,7 +14,7 @@ export default function Navbar() {
 
   return (
     <header className={styles.nav}>
-      <a href="#" className={styles.brand}>{brand}</a>
+      <a href="#" className={styles.brand} aria-label={brand}><Logo tone="light" height={54} /></a>
 
       <nav className={`${styles.tab} ${styles.center}`} aria-label="Navigasi utama">
         {navLinks.map((l) => (

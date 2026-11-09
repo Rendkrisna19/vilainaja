@@ -1,0 +1,9 @@
+.img { display: block; width: auto; max-width: none; }
+
+.auto { display: inline-flex; align-items: center; }
+.auto img { display: block; width: auto; }
+.onDark { display: none; }
+
+/* Mode gelap admin: tampilkan versi terang */
+:global(.admin[data-theme='dark']) .onLight { display: none; }
+:global(.admin[data-theme='dark']) .onDark { display: block; }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Lock, Mail } from 'lucide-react'
 import { APP_NAME } from '../../../lib/env'
+import Logo from '../../../lib/Logo'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../components/ui/Toast'
 import ThemeToggle from '../../components/layout/ThemeToggle'
@@ -43,7 +44,7 @@ export default function LoginPage() {
   return (
     <div className={s.page}>
       <aside className={s.visual} style={{ backgroundImage: `url(${HERO})` }}>
-        <span className={s.brand}>{APP_NAME}</span>
+        <Logo tone="light" height={80} alt={APP_NAME} />
         <p className={s.quote}>
           Kelola kamar, booking, dan tamu <em>dalam satu tempat.</em>
         </p>
