@@ -31,7 +31,7 @@ class PublicController extends Controller
 
         $bookings->expireOverdue();
 
-        $rooms = Room::where('is_active', true)->orderBy('price')->get();
+        $rooms = Room::where('is_active', true)->with(['images', 'facilities'])->orderBy('price')->get();
         $stats = $availability->forRooms($rooms, $in, $out);
 
         return response()->json([
@@ -41,7 +41,11 @@ class PublicController extends Controller
                 'name' => $r->name,
                 'tag' => $r->tag,
                 'description' => $r->description,
-                'image_url' => $r->image_url,
+                // Foto dari admin (WebP) diutamakan; URL Unsplash lama dipakai bila belum ada foto.
+                'image_url' => $r->images->first()?->url() ?? $r->image_url,
+                'thumb_url' => $r->images->first()?->thumbUrl() ?? $r->image_url,
+                'images' => $r->images->map(fn ($i) => ['url' => $i->url(), 'thumb_url' => $i->thumbUrl(), 'width' => $i->width, 'height' => $i->height])->values(),
+                'facilities' => $r->facilities->map(fn ($f) => ['id' => $f->id, 'name' => $f->name, 'icon' => $f->icon])->values(),
                 'size' => $r->size,
                 'capacity' => $r->capacity,
                 'bed' => $r->bed,

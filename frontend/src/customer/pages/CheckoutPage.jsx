@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { BedDouble, Clock, Phone, ShieldCheck, Users, Ruler, User } from 'lucide-react'
+import { BedDouble, Clock, Phone, ShieldCheck, Users, Ruler, User, Minus, Plus } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { formatRupiah } from '../../lib/format'
+import { FacilityIcon } from '../../lib/facilityIcons'
 import { api } from '../api/client'
 import { usePublicRooms } from '../api/hooks'
 import { useCustomerAuth } from '../context/CustomerAuthContext'
@@ -11,6 +12,8 @@ import { addDays, fmtDate, isoDate, newKey, nightsBetween } from '../lib/booking
 import Alert from '../components/ui/Alert'
 import Button from '../components/ui/Button'
 import { Field, Input, Textarea } from '../components/ui/Field'
+import RoomGallery from '../components/RoomGallery'
+import DateRangePicker from '../components/DateRangePicker'
 import s from './CheckoutPage.module.css'
 
 function CompleteProfile() {
@@ -38,7 +41,7 @@ function CompleteProfile() {
       <p className={s.muted}>Nomor WhatsApp diperlukan untuk konfirmasi pesanan.</p>
       <Input label="Nama lengkap" icon={User} value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} error={errors.name} required />
       <Input label="Nomor WhatsApp" icon={Phone} type="tel" placeholder="0812 3456 7890" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} error={errors.phone} required />
-      <Button type="submit" loading={saving}>Simpan &amp; lanjut</Button>
+      <Button type="submit" loading={saving} block>Simpan &amp; lanjut</Button>
     </form>
   )
 }
@@ -51,11 +54,14 @@ export default function CheckoutPage() {
   const { busy, run } = usePayment()
 
   const today = isoDate(new Date())
-  const [checkIn, setCheckIn] = useState(() => (sp.get('check_in') >= today ? sp.get('check_in') : today))
-  const [checkOut, setCheckOut] = useState(() => {
-    const out = sp.get('check_out')
-    return out && out > (sp.get('check_in') || today) ? out : addDays(sp.get('check_in') >= today ? sp.get('check_in') : today, 1)
+  const qIn = sp.get('check_in')
+  const qOut = sp.get('check_out')
+  const startIn = qIn && qIn >= today ? qIn : today
+  const [dates, setDates] = useState({
+    checkIn: startIn,
+    checkOut: qOut && qOut > startIn ? qOut : addDays(startIn, 1),
   })
+  const { checkIn, checkOut } = dates
   const [guests, setGuests] = useState(() => Number(sp.get('guests')) || 2)
   const [notes, setNotes] = useState('')
   const [error, setError] = useState(null)
@@ -64,6 +70,7 @@ export default function CheckoutPage() {
   const room = data?.data.find((r) => r.slug === slug)
   const nights = nightsBetween(checkIn, checkOut)
   const holdMinutes = data?.meta.hold_minutes ?? 30
+  const total = (room?.price ?? 0) * nights
 
   // Satu kunci per "percobaan"; berganti saat pilihan berubah. Klik ulang memakai kunci yang sama → tidak ada booking ganda.
   const key = useRef(newKey())
@@ -71,17 +78,12 @@ export default function CheckoutPage() {
     key.current = newKey()
   }, [room?.id, checkIn, checkOut, guests])
 
-  const changeCheckIn = (v) => {
-    setCheckIn(v)
-    if (checkOut <= v) setCheckOut(addDays(v, 1))
-  }
-
   const full = room && room.units_left < 1
   const tooMany = room && guests > room.capacity
 
   const submit = async (e) => {
     e.preventDefault()
-    if (!room || full || tooMany || busy) return
+    if (!room || full || tooMany || busy || nights < 1) return
     setError(null)
 
     try {
@@ -94,7 +96,7 @@ export default function CheckoutPage() {
       })
     } catch (err) {
       qc.invalidateQueries({ queryKey: ['public-rooms'] })
-      setError(err.errors ? { message: Object.values(err.errors)[0]?.[0] ?? err.message } : { message: err.message, code: err.code })
+      setError({ message: err.message, code: err.code })
     }
   }
 
@@ -108,36 +110,83 @@ export default function CheckoutPage() {
     )
   }
 
+  const gallery = room?.images?.length ? room.images : room ? [{ url: room.image_url, thumb_url: room.image_url }] : []
+
   return (
     <div className={s.layout}>
+      {/* ---------- Kiri: kamar ---------- */}
       <section className={s.main}>
-        <h1 className={s.title}>Pesan <em>{room?.name ?? '…'}</em></h1>
+        <p className={s.crumb}><Link to="/#kamar">Kamar</Link> / {room?.name ?? '…'}</p>
+        <h1 className={s.title}>{room?.name ?? ' '}</h1>
+        {room?.tag && <span className={s.tag}>{room.tag}</span>}
 
+        {room ? (
+          <RoomGallery images={gallery} alt={room.name} />
+        ) : (
+          <div className={s.skelImg} aria-busy="true" />
+        )}
+
+        {room && (
+          <>
+            <ul className={s.specs}>
+              <li><Ruler size={16} /><span><strong>{room.size} m²</strong> luas</span></li>
+              <li><Users size={16} /><span><strong>{room.capacity} tamu</strong> maks.</span></li>
+              <li><BedDouble size={16} /><span><strong>{room.bed}</strong> tempat tidur</span></li>
+            </ul>
+
+            {room.description && <p className={s.desc}>{room.description}</p>}
+
+            {room.facilities?.length > 0 && (
+              <div className={s.block}>
+                <h2 className={s.h3}>Fasilitas <em>kamar</em></h2>
+                <ul className={s.facilities}>
+                  {room.facilities.map((f) => (
+                    <li key={f.id}>
+                      <span className={s.fIcon}><FacilityIcon name={f.icon} /></span>
+                      {f.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* ---------- Kanan: kartu pemesanan ---------- */}
+      <aside className={s.side}>
         {!user?.profile_complete ? (
           <CompleteProfile />
         ) : (
           <form className={s.card} onSubmit={submit} noValidate>
-            <h2 className={s.h2}>Detail <em>menginap</em></h2>
-
-            <div className={s.grid2}>
-              <Input label="Check-in" type="date" min={today} value={checkIn} onChange={(e) => changeCheckIn(e.target.value)} required />
-              <Input label="Check-out" type="date" min={addDays(checkIn, 1)} value={checkOut} onChange={(e) => setCheckOut(e.target.value)} required />
+            <div className={s.cardHead}>
+              <h2 className={s.h2}>Pesan <em>menginap</em></h2>
+              {room && (
+                <span className={`${s.avail} ${full ? s.full : s.ok}`} aria-live="polite">
+                  <i />{full ? 'Penuh' : `Sisa ${room.units_left} unit`}
+                </span>
+              )}
             </div>
+
+            <DateRangePicker checkIn={checkIn} checkOut={checkOut} minDate={today} onChange={setDates} />
 
             <Field label="Jumlah tamu">
               <div className={s.stepper}>
-                <button type="button" onClick={() => setGuests((g) => Math.max(1, g - 1))} aria-label="Kurangi">−</button>
+                <button type="button" onClick={() => setGuests((g) => Math.max(1, g - 1))} aria-label="Kurangi tamu" disabled={guests <= 1}><Minus size={16} /></button>
                 <span>{guests} tamu</span>
-                <button type="button" onClick={() => setGuests((g) => Math.min(room?.capacity ?? 20, g + 1))} aria-label="Tambah">+</button>
+                <button type="button" onClick={() => setGuests((g) => Math.min(room?.capacity ?? 20, g + 1))} aria-label="Tambah tamu" disabled={room && guests >= room.capacity}><Plus size={16} /></button>
               </div>
             </Field>
 
-            <Textarea label="Catatan (opsional)" placeholder="Jam kedatangan, permintaan khusus, dsb." value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} />
+            <Textarea label="Catatan (opsional)" placeholder="Jam kedatangan, permintaan khusus, dsb." value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} rows={3} />
 
             <div className={s.guest}>
-              <p className={s.muted}>Pemesan</p>
-              <p><strong>{user.name}</strong> · {user.email} · +{user.phone}</p>
+              <span>Pemesan</span>
+              <strong>{user.name}</strong>
+              <small>{user.email} · +{user.phone}</small>
             </div>
+
+            {tooMany && <Alert tone="warn">Kapasitas kamar ini maksimal {room.capacity} tamu.</Alert>}
 
             {error && (
               <Alert tone="error">
@@ -146,47 +195,19 @@ export default function CheckoutPage() {
               </Alert>
             )}
 
-            <Button type="submit" block loading={busy} disabled={!room || full || tooMany || nights < 1}>
-              {busy ? 'Membuka pembayaran…' : full ? 'Kamar penuh' : `Bayar sekarang · ${formatRupiah((room?.price ?? 0) * nights)}`}
-            </Button>
-
-            <p className={s.secure}><ShieldCheck size={16} /> Pembayaran diproses aman oleh Midtrans. Kami tidak menyimpan data kartu Anda.</p>
-          </form>
-        )}
-      </section>
-
-      <aside className={s.side}>
-        <div className={s.summary}>
-          {room ? <img src={room.image_url} alt={room.name} /> : <div className={s.imgSkel} />}
-          <div className={s.sumBody}>
-            <h2 className={s.roomName}>{room?.name ?? ' '}</h2>
-            {room && (
-              <ul className={s.specs}>
-                <li><Ruler size={15} /> {room.size} m²</li>
-                <li><Users size={15} /> maks. {room.capacity} tamu</li>
-                <li><BedDouble size={15} /> {room.bed}</li>
-              </ul>
-            )}
-
-            {room && (
-              <div className={`${s.avail} ${full ? s.full : s.ok}`} aria-live="polite">
-                <span className={s.dot} />
-                {full ? 'Penuh pada tanggal ini' : `Tersedia · sisa ${room.units_left} unit`}
-                <small>diperbarui otomatis</small>
-              </div>
-            )}
-            {tooMany && <Alert tone="warn">Kapasitas kamar ini maksimal {room.capacity} tamu.</Alert>}
-
             <dl className={s.rows}>
-              <div><dt>Check-in</dt><dd>{fmtDate(checkIn)}</dd></div>
-              <div><dt>Check-out</dt><dd>{fmtDate(checkOut)}</dd></div>
-              <div><dt>{formatRupiah(room?.price)} × {nights} malam</dt><dd>{formatRupiah((room?.price ?? 0) * nights)}</dd></div>
-              <div className={s.total}><dt>Total</dt><dd>{formatRupiah((room?.price ?? 0) * nights)}</dd></div>
+              <div><dt>{formatRupiah(room?.price)} × {nights} malam</dt><dd>{formatRupiah(total)}</dd></div>
+              <div className={s.total}><dt>Total</dt><dd>{formatRupiah(total)}</dd></div>
             </dl>
 
-            <p className={s.hold}><Clock size={16} /> Setelah memesan, kamar ditahan <strong>{holdMinutes} menit</strong> untuk Anda menyelesaikan pembayaran.</p>
-          </div>
-        </div>
+            <Button type="submit" block loading={busy} disabled={!room || full || tooMany || nights < 1}>
+              {busy ? 'Membuka pembayaran…' : full ? 'Kamar penuh' : `Bayar sekarang`}
+            </Button>
+
+            <p className={s.hold}><Clock size={15} /> Setelah memesan, kamar ditahan <strong>{holdMinutes} menit</strong> untuk pembayaran.</p>
+            <p className={s.secure}><ShieldCheck size={15} /> Pembayaran diproses aman oleh Midtrans. Kami tidak menyimpan data kartu Anda.</p>
+          </form>
+        )}
       </aside>
     </div>
   )

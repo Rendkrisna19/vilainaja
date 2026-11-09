@@ -41,14 +41,16 @@ export function createClient({ tokenKey }) {
     const headers = { Accept: 'application/json' }
     const token = tokenStore.get()
     if (token) headers.Authorization = `Bearer ${token}`
-    if (body !== undefined) headers['Content-Type'] = 'application/json'
+    // FormData (unggah file) dikirim apa adanya; browser yang menentukan boundary multipart-nya.
+    const isForm = body instanceof FormData
+    if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
 
     let res
     try {
       res = await fetch(`${API_URL}${path}${toQuery(params)}`, {
         method,
         headers,
-        body: body !== undefined ? JSON.stringify(body) : undefined,
+        body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
         signal,
       })
     } catch (e) {

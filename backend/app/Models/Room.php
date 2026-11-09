@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
@@ -50,6 +51,16 @@ class Room extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(RoomImage::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function facilities(): BelongsToMany
+    {
+        return $this->belongsToMany(Facility::class)->orderBy('sort_order')->orderBy('name');
     }
 
     public function scopeSearch(Builder $query, ?string $term): Builder

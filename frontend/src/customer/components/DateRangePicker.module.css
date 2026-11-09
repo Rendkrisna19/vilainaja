@@ -1,0 +1,172 @@
+.root { position: relative; }
+
+/* Pemicu: satu kotak berisi check-in dan check-out */
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 66px;
+  padding: 6px 8px 6px 4px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  transition: border-color .2s, box-shadow .2s;
+}
+.trigger:hover { border-color: #cfccc5; }
+.active { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(20, 20, 20, .07); }
+
+.part {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s;
+}
+.part:hover { background: var(--sand); }
+.label { font-size: 11.5px; color: var(--muted); letter-spacing: .01em; }
+.value { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.divider { width: 1px; align-self: stretch; margin: 12px 0; background: var(--line); flex: none; }
+.nightsBadge {
+  flex: none;
+  margin-right: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; padding: 0 6px; font-size: 12.5px; color: var(--muted); }
+.meta span { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.clear { border: 0; background: none; color: var(--ink); font: inherit; font-size: 12.5px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; flex: none; }
+
+/* Popover kalender */
+.pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  width: min(640px, calc(100vw - 40px));
+  padding: 18px 20px 14px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 30px 80px rgba(10, 20, 30, .18);
+  animation: pop .2s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes pop { from { opacity: 0; transform: translateY(-6px) scale(.985); } }
+
+.head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.head p { margin: 0; font-size: 13px; color: var(--muted); }
+.nav { display: flex; gap: 6px; }
+.nav button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+.nav button:hover:not(:disabled) { border-color: var(--ink); }
+.nav button:disabled { opacity: .3; cursor: not-allowed; }
+
+.months { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.second { display: none; }
+@media (min-width: 720px) {
+  .months { grid-template-columns: 1fr 1fr; }
+  .second { display: block; }
+}
+
+.month { min-width: 0; }
+.monthTitle { margin: 4px 0 10px; text-align: center; font-size: 15px; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; }
+.dow { padding: 6px 0; font-size: 11px; color: var(--muted); }
+
+.day {
+  position: relative;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  z-index: 0;
+}
+.day:hover:not(:disabled) { color: #000; }
+.day:hover:not(:disabled):not(.start):not(.end)::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--sand);
+  z-index: -1;
+}
+.disabled { color: #c9c6bf; text-decoration: line-through; text-decoration-color: #e0ddd6; cursor: not-allowed; }
+.today { font-weight: 600; }
+.today::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+/* Rentang: pita sand di antara tanggal masuk dan keluar */
+.inRange { background: var(--sand); border-radius: 0; }
+.inRange:hover { background: #ebe8e2 !important; }
+.start, .end { color: #fff !important; font-weight: 600; }
+.start { background: var(--ink); border-radius: 12px 0 0 12px; }
+.end { background: var(--ink); border-radius: 0 12px 12px 0; }
+.start.end { border-radius: 12px; }
+.start::before, .end::before { display: none; }
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+.done {
+  height: 40px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.done:disabled { opacity: .35; cursor: not-allowed; }
+
+@media (max-width: 559px) {
+  .nightsBadge { display: none; }
+  .pop { left: 50%; translate: -50% 0; width: calc(100vw - 32px); max-height: 80dvh; overflow-y: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop { animation: none; }
+}

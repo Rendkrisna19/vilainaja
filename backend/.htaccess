@@ -1,0 +1,29 @@
+# Taruh file ini di folder induk backend (sejajar dengan folder public/, app/, .env).
+# Dipakai hanya bila document root subdomain masih mengarah ke folder ini, bukan ke public/.
+# Idealnya document root langsung diset ke .../public; kalau sudah begitu, file ini tidak diperlukan.
+
+<IfModule mod_rewrite.c>
+    Options -Indexes -MultiViews
+    RewriteEngine On
+
+    # Blokir akses langsung ke file dan folder sensitif.
+    RewriteRule ^\.(env|git.*)$ - [F,L]
+    RewriteRule ^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml)$ - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|routes|storage|tests|vendor|resources|lang)(/|$) - [F,L]
+
+    # Teruskan header Authorization (token login) ke PHP.
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # File statis yang ada di public/ (css, js, gambar) dilayani langsung.
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Semua route lain (termasuk /api/...) diarahkan ke front controller Laravel.
+    # REQUEST_URI tetap asli, sehingga routing Laravel tidak berubah.
+    RewriteRule ^ public/index.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>

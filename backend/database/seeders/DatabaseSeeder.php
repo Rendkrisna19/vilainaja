@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             SettingSeeder::class,
             RoomSeeder::class,
+            FacilitySeeder::class,
             BookingSeeder::class,
             LeadSeeder::class,
         ]);

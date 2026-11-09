@@ -8,9 +8,11 @@ use App\Http\Resources\RoomResource;
 use App\Models\Room;
 use App\Services\AvailabilityService;
 use App\Services\BookingService;
+use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class RoomController extends Controller
 {
@@ -26,6 +28,7 @@ class RoomController extends Controller
         $perPage = min(max($request->integer('per_page', 10), 1), 100);
 
         $rooms = Room::query()
+            ->with(['images', 'facilities'])
             ->withCount('bookings')
             ->search($request->query('search'))
             ->when($request->filled('active'), fn ($q) => $q->where('is_active', $request->boolean('active')))
@@ -44,29 +47,40 @@ class RoomController extends Controller
 
     public function store(RoomRequest $request): JsonResponse
     {
-        $room = Room::create($request->validated());
+        $room = DB::transaction(function () use ($request) {
+            $room = Room::create($request->safe()->except('facility_ids'));
+            $room->facilities()->sync($request->input('facility_ids', []));
+            return $room;
+        });
 
-        return (new RoomResource($room))->response()->setStatusCode(201);
+        return (new RoomResource($room->load(['images', 'facilities'])))->response()->setStatusCode(201);
     }
 
     public function show(Room $room): RoomResource
     {
-        return new RoomResource($room->loadCount('bookings'));
+        return new RoomResource($room->loadCount('bookings')->load(['images', 'facilities']));
     }
 
     public function update(RoomRequest $request, Room $room): RoomResource
     {
-        $room->update($request->validated());
+        DB::transaction(function () use ($request, $room) {
+            $room->update($request->safe()->except('facility_ids'));
+            $room->facilities()->sync($request->input('facility_ids', []));
+        });
 
-        return new RoomResource($room->loadCount('bookings'));
+        return new RoomResource($room->loadCount('bookings')->load(['images', 'facilities']));
     }
 
-    public function destroy(Room $room): JsonResponse
+    public function destroy(Room $room, ImageService $images): JsonResponse
     {
         if ($room->bookings()->exists()) {
             return response()->json([
                 'message' => 'Kamar tidak dapat dihapus karena sudah memiliki data booking. Nonaktifkan saja kamar ini.',
             ], 409);
+        }
+
+        foreach ($room->images as $img) {
+            $images->deleteFiles($img->path, $img->thumb_path);
         }
 
         $room->delete();

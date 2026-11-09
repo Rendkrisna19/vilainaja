@@ -17,7 +17,7 @@ export default function RoomCard({ room, clone = false, query = '' }) {
   return (
     <article className={`${styles.card} ${soldOut ? styles.soldOut : ''}`} aria-hidden={clone || undefined}>
       <div className={styles.media}>
-        <img src={room.image_url} alt={`Interior ${room.name}`} loading="lazy" draggable="false" />
+        <img src={room.thumb_url || room.image_url} alt={`Interior ${room.name}`} loading="lazy" decoding="async" draggable="false" />
         {room.tag && <span className={styles.tag}>{room.tag}</span>}
         <Availability room={room} />
       </div>

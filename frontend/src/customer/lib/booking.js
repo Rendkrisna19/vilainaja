@@ -24,6 +24,10 @@ export const nightsBetween = (a, b) => Math.max(0, Math.round((parseISO(b) - par
 export const fmtDate = (iso) =>
   parseISO(iso).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
 
+// Format pendek untuk pemicu kalender: "9 Nov"
+export const fmtShort = (iso) =>
+  parseISO(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+
 export const newKey = () =>
   (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`).slice(0, 64)
 

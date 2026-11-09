@@ -47,7 +47,7 @@ export default function RoomsPage() {
       skeleton: '75%',
       render: (r) => (
         <div className={s.room}>
-          {r.image_url ? <img src={r.image_url} alt="" loading="lazy" /> : <span className={s.noImg}><BedDouble size={18} /></span>}
+          {(r.images?.[0]?.thumb_url || r.image_url) ? <img src={r.images?.[0]?.thumb_url || r.image_url} alt="" loading="lazy" /> : <span className={s.noImg}><BedDouble size={18} /></span>}
           <div>
             <p className={s.name}>{r.name}</p>
             {r.tag && <p className={s.tag}>{r.tag}</p>}

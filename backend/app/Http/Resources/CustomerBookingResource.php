@@ -21,7 +21,7 @@ class CustomerBookingResource extends JsonResource
                 'id' => $this->room->id,
                 'name' => $this->room->name,
                 'slug' => $this->room->slug,
-                'image_url' => $this->room->image_url,
+                'image_url' => $this->room->images()->first()?->thumbUrl() ?? $this->room->image_url,
             ]),
             'check_in' => $this->check_in?->format('Y-m-d'),
             'check_out' => $this->check_out?->format('Y-m-d'),

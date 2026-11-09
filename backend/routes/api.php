@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Customer\AuthController as CustomerAuthController;
 use App\Http\Controllers\Api\Customer\BookingController as CustomerBookingController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\FacilityController;
+use App\Http\Controllers\Api\RoomImageController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Http\Controllers\Api\PublicController;
@@ -52,6 +54,13 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/dashboard', DashboardController::class);
 
     Route::apiResource('rooms', RoomController::class);
+    Route::post('/rooms/{room}/images', [RoomImageController::class, 'store']);
+    Route::delete('/room-images/{image}', [RoomImageController::class, 'destroy']);
+
+    Route::get('/facilities', [FacilityController::class, 'index']);
+    Route::post('/facilities', [FacilityController::class, 'store']);
+    Route::delete('/facilities/{facility}', [FacilityController::class, 'destroy']);
+
     Route::apiResource('bookings', BookingController::class);
     Route::apiResource('leads', LeadController::class);
 

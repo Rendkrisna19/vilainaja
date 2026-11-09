@@ -24,6 +24,8 @@ class RoomRequest extends FormRequest
             'price' => ['required', 'integer', 'min:0'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000'],
             'is_active' => ['required', 'boolean'],
+            'facility_ids' => ['nullable', 'array'],
+            'facility_ids.*' => ['integer', 'exists:facilities,id'],
         ];
     }
 

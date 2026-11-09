@@ -31,6 +31,19 @@ class RoomResource extends JsonResource
                 fn () => ! $this->is_active ? 'inactive' : ($this->units_left < 1 ? 'full' : 'available'),
             ),
             'bookings_count' => $this->whenCounted('bookings'),
+            'images' => $this->whenLoaded('images', fn () => $this->images->map(fn ($i) => [
+                'id' => $i->id,
+                'url' => $i->url(),
+                'thumb_url' => $i->thumbUrl(),
+                'width' => $i->width,
+                'height' => $i->height,
+            ])->values()),
+            'facilities' => $this->whenLoaded('facilities', fn () => $this->facilities->map(fn ($f) => [
+                'id' => $f->id,
+                'name' => $f->name,
+                'icon' => $f->icon,
+            ])->values()),
+            'facility_ids' => $this->whenLoaded('facilities', fn () => $this->facilities->pluck('id')->values()),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
